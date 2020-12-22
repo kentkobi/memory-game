@@ -1,4 +1,5 @@
 import './App.css';
+import shortid from 'shortid';
 import Game from './components/Game';
 
 function App() {
@@ -6,7 +7,8 @@ function App() {
 
   return (
     <div className="App">
-      <Game types={types}/>
+      
+      <Game key={shortid.generate()} types={types}/>
     </div>
   );
 }

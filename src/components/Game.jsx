@@ -68,13 +68,15 @@ const Game = ({types}) => {
 
     useEffect(() => {
         if (firstCard && secondCard) // on card match attempt
-		    (firstCard.type === secondCard.type) ? onMatch() : unflipCards(); // check if cards are a match, otherwise unflip them
+            (firstCard.type === secondCard.type) ? onMatch() : unflipCards(); // check if cards are a match, otherwise unflip them
+            
+        // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [firstCard, secondCard]);
 
 	return (
         <div className="memory-game">
             {deck.map(card => 
-                <Card key={card.index} onClick={() => flipCard(card)}  {...card}/>
+                <Card key={card.id} onClick={() => flipCard(card)}  {...card}/>
             )}
         </div>
     )
