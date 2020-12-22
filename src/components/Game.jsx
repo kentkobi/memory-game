@@ -3,6 +3,7 @@ import Card from './Card';
 import './Game.css';
 
 const Game = ({types}) => {
+    const [locked, setLocked] = useState(false);
     const [deck, setDeck] = useState(generateDeck());
     const [firstCard, setFirstCard] = useState(null);
 	const [secondCard, setSecondCard] = useState(null);
@@ -31,12 +32,18 @@ const Game = ({types}) => {
 
     /* flips target card */
     function flipCard(card) {
-        (firstCard) ? setSecondCard(card) : setFirstCard(card);
+        
+        if(locked === false){
+            console.log(locked, "should flip");
+            (firstCard) ? setSecondCard(card) : setFirstCard(card);
 
-        const updatedDeck = [...deck]
-        updatedDeck.find(x => x.id === card.id).isFlipped = true
+            const updatedDeck = [...deck]
+            updatedDeck.find(x => x.id === card.id).isFlipped = true
 
-        setDeck(updatedDeck)
+            setDeck(updatedDeck)
+        } else {
+            console.log(locked, "shouldn't flip");
+        }
     }
 
     /* unflips the two cards that have been attempted (previously flipped) */
@@ -47,13 +54,13 @@ const Game = ({types}) => {
             );
  
             setDeck(updatedDeck)
+            resetSelection()
         }, 1000);
-
-        resetSelection()
     }
 
     /* checks if the game is complete and clears the game to be ready for the next match attempt */
     function onMatch() {
+        
         if( deck.every(card => card.isFlipped === true) )
             console.log("game complete!")
 
@@ -63,15 +70,22 @@ const Game = ({types}) => {
     /* clears card match attempt */
     function resetSelection() {
 		setFirstCard(null);
-		setSecondCard(null);
+        setSecondCard(null);
+        setLocked(false);
+        console.log(locked, "set game back to playable");
 	}
 
     useEffect(() => {
-        if (firstCard && secondCard) // on card match attempt
+        
+        if (firstCard && secondCard){
+            setLocked(true);
+            console.log("first and second card...");
             (firstCard.type === secondCard.type) ? onMatch() : unflipCards(); // check if cards are a match, otherwise unflip them
+        }
+            
             
         // eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [firstCard, secondCard]);
+	}, [firstCard, secondCard, setLocked]);
 
 	return (
         <div className="memory-game">
